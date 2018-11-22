@@ -79,7 +79,7 @@ public class GoldDetectionTest extends LinearOpMode {
 
         detector.enable();
 
-        //yes
+        //no
         move(350, 1500);
         turn(520,1500);
         sleep(1000);
