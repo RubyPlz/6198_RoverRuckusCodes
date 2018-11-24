@@ -109,6 +109,8 @@ public class AutoTest extends LinearOpMode {
                 backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+
                 frontLeftDrive.setTargetPosition(ticNum);//move to pos 10
                 frontRightDrive.setTargetPosition(ticNum);
                 backLeftDrive.setTargetPosition(ticNum);
