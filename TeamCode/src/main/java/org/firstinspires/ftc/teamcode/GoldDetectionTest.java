@@ -30,11 +30,18 @@ public class GoldDetectionTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "fleft");frontRightDrive = hardwareMap.get(DcMotor.class, "fright");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "bleft");backRightDrive = hardwareMap.get(DcMotor.class, "bright");
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);backRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setPower(0);frontRightDrive.setPower(0);backLeftDrive.setPower(0);backRightDrive.setPower(0);
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "fleft");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "fright");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "bleft");
+        backRightDrive = hardwareMap.get(DcMotor.class, "bright");
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        backRightDrive.setPower(0);
         intake = hardwareMap.get(CRServo.class, "IntakeServo");
         upDownBoi = hardwareMap.get(CRServo.class, "UpDownBoi");
         intake.setDirection(CRServo.Direction.FORWARD);
@@ -81,24 +88,22 @@ public class GoldDetectionTest extends LinearOpMode {
 
         //yes
         move(350, 1500);
-        turn(520,1500);
+        turn(520, 1500);
         sleep(1000);
-        if(detector.getAligned()){
+        if (detector.getAligned()) {
             turn(-520, 1500);
             move(350, 1500);
             move(-350, 1500);
             golded = true;
-        }
-        else{
+        } else {
             move(-410, 1500);
             sleep(1000);
-            if(detector.getAligned() && !golded) {
+            if (detector.getAligned() && !golded) {
                 turn(-520, 1500);
                 move(350, 1500);
                 move(-350, 1500);
-            }
-            else{
-                move(830, 2000);
+            } else {
+                move(900, 2000);
                 turn(-520, 1500);
                 move(350, 1500);
                 move(-350, 1500);
@@ -119,7 +124,7 @@ public class GoldDetectionTest extends LinearOpMode {
     }
 
 
-    public void turn(int value, int sleepNum){
+    public void turn(int value, int sleepNum) {
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -134,10 +139,10 @@ public class GoldDetectionTest extends LinearOpMode {
         backLeftDrive.setTargetPosition(-value);
         backRightDrive.setTargetPosition(value);
         sleep(sleepNum);
-
+        stopMotors();
     }
 
-    public void move(int value,int sleepNum){
+    public void move(int value, int sleepNum) {
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -152,6 +157,18 @@ public class GoldDetectionTest extends LinearOpMode {
         backLeftDrive.setTargetPosition(value);
         backRightDrive.setTargetPosition(value);
         sleep(sleepNum);
+        stopMotors();
 
+    }
+
+    public void stopMotors() {
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

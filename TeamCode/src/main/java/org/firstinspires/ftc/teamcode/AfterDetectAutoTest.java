@@ -1,18 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class AfterDetectAutoTest {
+
 
 
     @TeleOp(name="AfterDetectAutoTest")
-    public class AutoTest extends LinearOpMode {
+    public class AfterDetectAutoTest extends LinearOpMode {
         // Declare OpMode members.
         private ElapsedTime runtime = new ElapsedTime();
         private DcMotor frontLeftDrive = null;
@@ -34,11 +31,13 @@ public class AfterDetectAutoTest {
         private boolean leftStickOn = false;
 
         private double powerLevel = 0.2;
-        private int ticNum = 2240;
+        private int tic1 = 2000;
+        private int tic2 = 2000;
+        private int tic3 = 2000;
+        private int ticCounter = 1;
 
         private int sleepNum = 2000;
-
-        private GoldAlignDetector detector;
+        
 
         /*
          * Code to run ONCE when the driver hits INIT
@@ -57,25 +56,7 @@ public class AfterDetectAutoTest {
             frontRightDrive.setPower(0);
             backLeftDrive.setPower(0);
             backRightDrive.setPower(0);
-            detector = new GoldAlignDetector();
-            detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-            detector.useDefaults();
-
-            // Optional Tuning
-            detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
-            detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-            detector.downscale = 0.4; // How much to downscale the input frames
-
-            detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-            //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-            detector.maxAreaScorer.weight = 0.005;
-
-            detector.ratioScorer.weight = 5;
-            detector.ratioScorer.perfectRatio = 1.0;
-
-            detector.enable();
-
-
+            
             telemetry.addData("Robot", "Initialized");
             telemetry.update();
             // Wait for the game to start (driver presses PLAY)
@@ -85,189 +66,82 @@ public class AfterDetectAutoTest {
 
             //PLAY
             while (opModeIsActive()) {
-
-
-                telemetry.addData("Tic Number", ticNum);
+                
+                telemetry.addData("Tic 1", tic1);
+                telemetry.addData("Tic 2", tic2);
+                telemetry.addData("Tic 3", tic3);
+                telemetry.addData("Tic:", ticCounter);
                 telemetry.addData("Power Level", "Power Level (%.2f)", powerLevel);
                 telemetry.addData("Sleep Number",sleepNum);
-                telemetry.addData("Aligned with Gold", detector.getAligned());
-
-
-
-
-
-
-
+                
                 //buttons
                 if (gamepad1.y && !yPress) {
                     yPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    stopMotors();
                     frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
                     frontRightDrive.setPower(powerLevel);
                     backLeftDrive.setPower(powerLevel);
                     backRightDrive.setPower(powerLevel);
                     move(350, 1500);
-                    turn(520,1500);
-                    turn(-520, 1500);
+                    turnL();
+                    turnR();
                     move(350, 1500);
                     move(-350, 1500);
-                    turn(520,1500);
-                    move(ticNum, sleepNum);
-
+                    turnL();
+                    move(tic1, sleepNum);
+                    turnHL();
+                    move(tic2, sleepNum);
+                    move(-tic3, sleepNum);
                 }
                 else if(!gamepad1.y) {
                     yPress = false;
                 }
-                if (gamepad1.a && !aPress) {
-                    aPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    frontLeftDrive.setTargetPosition(-ticNum);//move to pos 10
-                    frontRightDrive.setTargetPosition(-ticNum);
-                    backLeftDrive.setTargetPosition(-ticNum);
-                    backRightDrive.setTargetPosition(-ticNum);
-
-                    frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
-                    frontRightDrive.setPower(powerLevel);
-                    backLeftDrive.setPower(powerLevel);
-                    backRightDrive.setPower(powerLevel);
-                    sleep(sleepNum);
-                }else if(!gamepad1.a) {
-                    aPress = false;
-                }
 
                 if (gamepad1.x && !xPress) {
                     xPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    stopMotors();
                     frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
                     frontRightDrive.setPower(powerLevel);
                     backLeftDrive.setPower(powerLevel);
                     backRightDrive.setPower(powerLevel);
                     move(350, 1500);
-                    turn(520,1500);
+                    turnL();
                     move(-410, 1500);
-                    move(830, 2000);
-                    turn(-520, 1500);
+                    move(900, 2000);
+                    turnR();
                     move(350, 1500);
                     move(-350, 1500);
-                    turn(520,1500);
-                    move(ticNum, sleepNum);
+                    turnL();
+                    move(tic1, sleepNum);
+                    turnHL();
+                    move(tic2, sleepNum);
+                    move(-tic3, sleepNum);
                 }else if(!gamepad1.x) {
                     xPress = false;
                 }
 
                 if (gamepad1.b && !bPress) {
                     bPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    stopMotors();
                     frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
                     frontRightDrive.setPower(powerLevel);
                     backLeftDrive.setPower(powerLevel);
                     backRightDrive.setPower(powerLevel);
                     move(350, 1500);
-                    turn(520,1500);
+                    turnL();
                     move(-410, 1500);
-                    turn(-520, 1500);
+                    turnR();
                     move(350, 1500);
                     move(-350, 1500);
-                    turn(520,1500);
-                    move(ticNum, sleepNum);
+                    turnL();
+                    move(tic1, sleepNum);
+                    turnHL();
+                    move(tic2, sleepNum);
+                    move(-tic3, sleepNum);
                 }else if(!gamepad1.b) {
                     bPress = false;
                 }
 
-
-
-
-
-
-
-                //triggers
-                if(gamepad1.right_trigger>0 && !rtPress){
-                    rtPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    frontLeftDrive.setTargetPosition(280);//move to pos 10
-                    frontRightDrive.setTargetPosition(-280);
-                    backLeftDrive.setTargetPosition(280);
-                    backRightDrive.setTargetPosition(-280);
-
-                    frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
-                    frontRightDrive.setPower(powerLevel);
-                    backLeftDrive.setPower(powerLevel);
-                    backRightDrive.setPower(powerLevel);
-                    sleep(sleepNum);
-
-                }else if(gamepad1.right_trigger==0){
-                    rtPress = false;
-
-                }
-
-                if(gamepad1.left_trigger>0 && !ltPress){
-                    ltPress = true;
-                    frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    frontLeftDrive.setTargetPosition(-280);//move to pos 10
-                    frontRightDrive.setTargetPosition(280);
-                    backLeftDrive.setTargetPosition(-280);
-                    backRightDrive.setTargetPosition(280);
-
-                    frontLeftDrive.setPower(powerLevel);//at max speed (-1 to 1)
-                    frontRightDrive.setPower(powerLevel);
-                    backLeftDrive.setPower(powerLevel);
-                    backRightDrive.setPower(powerLevel);
-                    sleep(sleepNum);
-
-                }else if(gamepad1.left_trigger==0){
-                    ltPress = false;
-
-                }
-
-
-
-
-                //stick buttons
                 if(gamepad1.left_stick_y > 0 && !leftStickOn){
                     leftStickOn = true;
                     sleepNum = sleepNum + 100;
@@ -275,82 +149,185 @@ public class AfterDetectAutoTest {
                     leftStickOn = false;
                 }
 
-                if(gamepad1.left_stick_y > 0 && !leftStickOn){
+                if(gamepad1.left_stick_y < 0 && !leftStickOn){
                     leftStickOn = true;
                     sleepNum = sleepNum - 100;
                 }else if (gamepad1.left_stick_y == 0){
                     leftStickOn = false;
                 }
-
-
-
-                //dpad
-                if (gamepad1.dpad_up && !dPadUpPress) {
-                    ticNum += 500;
-                    dPadUpPress = true;
-                } else if (!gamepad1.dpad_up) {
-                    dPadUpPress = false;
+                
+                if(gamepad1.a && !aPress && ticCounter < 3){
+                    ticCounter++;
+                    aPress = true;
                 }
-                if (gamepad1.dpad_down && !dPadDownPress) {
-                    ticNum -= 500;
-                    dPadDownPress = true;
-                } else if (!gamepad1.dpad_down) {
-                    dPadDownPress = false;
+                else if(gamepad1.a && !aPress && ticCounter == 3){
+                    ticCounter = 1;
+                    aPress = true;
+                } else if (!gamepad1.a) {
+                    aPress = false;
                 }
-                if (gamepad1.dpad_right && !dPadRightPress) {
-                    ticNum += 50;
-                    dPadRightPress = true;
-                } else if (!gamepad1.dpad_right) {
-                    dPadRightPress = false;
+                
+                if(ticCounter == 1){
+                    //dpad
+                    if (gamepad1.dpad_up && !dPadUpPress) {
+                        tic1 += 500;
+                        dPadUpPress = true;
+                    } else if (!gamepad1.dpad_up) {
+                        dPadUpPress = false;
+                    }
+                    if (gamepad1.dpad_down && !dPadDownPress) {
+                        tic1 -= 500;
+                        dPadDownPress = true;
+                    } else if (!gamepad1.dpad_down) {
+                        dPadDownPress = false;
+                    }
+                    if (gamepad1.dpad_right && !dPadRightPress) {
+                        tic1 += 50;
+                        dPadRightPress = true;
+                    } else if (!gamepad1.dpad_right) {
+                        dPadRightPress = false;
+                    }
+                    if (gamepad1.dpad_left && !dPadLeftPress) {
+                        tic1 -= 50;
+                        dPadLeftPress = true;
+
+                    }else if (!gamepad1.dpad_left) {
+                        dPadLeftPress = false;
+                    }
+
+
+
+                    //Bumper
+                    if (gamepad1.right_bumper && !rBump) {
+                        tic1 += 10;
+                        rBump = true;
+                    }else if (!gamepad1.right_bumper) {
+                        rBump = false;
+                    }
+
+                    if (gamepad1.left_bumper && !lBump) {
+                        tic1 -= 10;
+                        lBump = true;
+                    }else if (!gamepad1.left_bumper) {
+                        lBump = false;
+                    }
+
                 }
-                if (gamepad1.dpad_left && !dPadLeftPress) {
-                    ticNum -= 50;
-                    dPadLeftPress = true;
+                else if(ticCounter == 2){
+                    //dpad
+                    if (gamepad1.dpad_up && !dPadUpPress) {
+                        tic2 += 500;
+                        dPadUpPress = true;
+                    } else if (!gamepad1.dpad_up) {
+                        dPadUpPress = false;
+                    }
+                    if (gamepad1.dpad_down && !dPadDownPress) {
+                        tic2 -= 500;
+                        dPadDownPress = true;
+                    } else if (!gamepad1.dpad_down) {
+                        dPadDownPress = false;
+                    }
+                    if (gamepad1.dpad_right && !dPadRightPress) {
+                        tic2 += 50;
+                        dPadRightPress = true;
+                    } else if (!gamepad1.dpad_right) {
+                        dPadRightPress = false;
+                    }
+                    if (gamepad1.dpad_left && !dPadLeftPress) {
+                        tic2 -= 50;
+                        dPadLeftPress = true;
 
-                }else if (!gamepad1.dpad_left) {
-                    dPadLeftPress = false;
+                    }else if (!gamepad1.dpad_left) {
+                        dPadLeftPress = false;
+                    }
+
+
+
+                    //Bumper
+                    if (gamepad1.right_bumper && !rBump) {
+                        tic2 += 10;
+                        rBump = true;
+                    }else if (!gamepad1.right_bumper) {
+                        rBump = false;
+                    }
+
+                    if (gamepad1.left_bumper && !lBump) {
+                        tic2 -= 10;
+                        lBump = true;
+                    }else if (!gamepad1.left_bumper) {
+                        lBump = false;
+                    }
+
                 }
+                else if(ticCounter == 3) {
+                    //dpad
+                    if (gamepad1.dpad_up && !dPadUpPress) {
+                        tic3 += 500;
+                        dPadUpPress = true;
+                    } else if (!gamepad1.dpad_up) {
+                        dPadUpPress = false;
+                    }
+                    if (gamepad1.dpad_down && !dPadDownPress) {
+                        tic3 -= 500;
+                        dPadDownPress = true;
+                    } else if (!gamepad1.dpad_down) {
+                        dPadDownPress = false;
+                    }
+                    if (gamepad1.dpad_right && !dPadRightPress) {
+                        tic3 += 50;
+                        dPadRightPress = true;
+                    } else if (!gamepad1.dpad_right) {
+                        dPadRightPress = false;
+                    }
+                    if (gamepad1.dpad_left && !dPadLeftPress) {
+                        tic3 -= 50;
+                        dPadLeftPress = true;
+
+                    }else if (!gamepad1.dpad_left) {
+                        dPadLeftPress = false;
+                    }
 
 
 
-                //Bumper
-                if (gamepad1.right_bumper && !rBump) {
-                    ticNum += 10;
-                    rBump = true;
-                }else if (!gamepad1.right_bumper) {
-                    rBump = false;
+                    //Bumper
+                    if (gamepad1.right_bumper && !rBump) {
+                        tic3 += 10;
+                        rBump = true;
+                    }else if (!gamepad1.right_bumper) {
+                        rBump = false;
+                    }
+
+                    if (gamepad1.left_bumper && !lBump) {
+                        tic3 -= 10;
+                        lBump = true;
+                    }else if (!gamepad1.left_bumper) {
+                        lBump = false;
+                    }
+
                 }
-
-                if (gamepad1.left_bumper && !lBump) {
-                    ticNum -= 10;
-                    lBump = true;
-                }else if (!gamepad1.left_bumper) {
-                    lBump = false;
-                }
-
-
                 telemetry.update();
             }
         }
         public void turn(int value, int sleepNum){
-            frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             frontLeftDrive.setTargetPosition(-value);
             frontRightDrive.setTargetPosition(value);
             backLeftDrive.setTargetPosition(-value);
             backRightDrive.setTargetPosition(value);
             sleep(sleepNum);
+            stopMotors();
 
         }
 
         public void move(int value,int sleepNum){
+            frontLeftDrive.setTargetPosition(value);
+            frontRightDrive.setTargetPosition(value);
+            backLeftDrive.setTargetPosition(value);
+            backRightDrive.setTargetPosition(value);
+            sleep(sleepNum);
+            stopMotors();
+
+        }
+        public void stopMotors() {
             frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -360,12 +337,24 @@ public class AfterDetectAutoTest {
             backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            frontLeftDrive.setTargetPosition(value);
-            frontRightDrive.setTargetPosition(value);
-            backLeftDrive.setTargetPosition(value);
-            backRightDrive.setTargetPosition(value);
-            sleep(sleepNum);
-
+        }
+        public void turnL(){
+            turn(520,1100);
+        }
+        public void turnR(){
+            turn(-520,1100);
+        }
+        public void turnHL(){
+            turn(280,1000);
+        }
+        public void turnHR(){
+            turn(-280,1000);
+        }
+        public void setPower(int p){
+            frontLeftDrive.setPower(p);//at max speed (-1 to 1)
+            frontRightDrive.setPower(p);
+            backLeftDrive.setPower(p);
+            backRightDrive.setPower(p);
         }
     }
-}
+

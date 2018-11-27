@@ -272,7 +272,7 @@ public class AutoTest extends LinearOpMode {
                 leftStickOn = false;
             }
 
-            if(gamepad1.left_stick_y > 0 && !leftStickOn){
+            if(gamepad1.left_stick_y < 0 && !leftStickOn){
                 leftStickOn = true;
                 sleepNum = sleepNum - 100;
             }else if (gamepad1.left_stick_y == 0){
