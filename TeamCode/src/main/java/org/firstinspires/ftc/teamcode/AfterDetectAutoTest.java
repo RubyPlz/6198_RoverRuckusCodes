@@ -309,10 +309,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             }
         }
         public void turn(int value, int sleepNum){
+            setPower(.2);
             frontLeftDrive.setTargetPosition(-value);
             frontRightDrive.setTargetPosition(value);
             backLeftDrive.setTargetPosition(-value);
             backRightDrive.setTargetPosition(value);
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(sleepNum);
             stopMotors();
 
@@ -323,6 +328,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             frontRightDrive.setTargetPosition(value);
             backLeftDrive.setTargetPosition(value);
             backRightDrive.setTargetPosition(value);
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(sleepNum);
             stopMotors();
 
@@ -332,11 +341,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         }
         public void turnL(){
             turn(520,1100);
@@ -350,7 +354,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         public void turnHR(){
             turn(-280,1000);
         }
-        public void setPower(int p){
+        public void setPower(double p){
             frontLeftDrive.setPower(p);//at max speed (-1 to 1)
             frontRightDrive.setPower(p);
             backLeftDrive.setPower(p);
