@@ -26,12 +26,12 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
     //outTakeOn false, inTakeOn true, servo is outaking
     //both true means code has broken
     private CRServo upDownBoi = null;
+
     private DcMotor horiSlide = null;
+    private DcMotor vertSlide = null;
+    private Servo dump = null;
 
-
-    private DcMotor latch = null;
-    private boolean upOn = false;
-
+    private DcMotor actuator = null;
 
 
     /*
@@ -54,14 +54,18 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
 
         intake = hardwareMap.get(CRServo.class,"IntakeServo");
         upDownBoi = hardwareMap.get(CRServo.class, "UpDownBoi");
+
+
         horiSlide = hardwareMap.get(DcMotor.class, "HoriSlide");
         horiSlide.setPower(0);
+        vertSlide = hardwareMap.get(DcMotor.class,"VertSlide");
+        vertSlide.setDirection(DcMotor.Direction.FORWARD);
 
-        latch = hardwareMap.get(DcMotor.class,"latch");
-        latch.setDirection(DcMotor.Direction.FORWARD);
+        actuator = hardwareMap.get(DcMotor.class,"Actuator");
+        actuator.setDirection(DcMotor.Direction.FORWARD);
 
-
-
+        dump = hardwareMap.get(Servo.class,"Dump");
+        dump.setDirection(Servo.Direction.FORWARD);
 
 
 
@@ -171,13 +175,13 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
             //latch
             if(gamepad1.dpad_up || gamepad1.dpad_down) {
                 if(gamepad1.dpad_up) {
-                    latch.setPower(-1.0);//neg robot go down
+                    actuator.setPower(-1.0);//neg robot go down
                 }
                 if(gamepad1.dpad_down) {
-                    latch.setPower(1.0);//pos robot go up
+                    actuator.setPower(1.0);//pos robot go up
                 }
             }else{
-                latch.setPower(0);
+                actuator.setPower(0);
             }
 
 

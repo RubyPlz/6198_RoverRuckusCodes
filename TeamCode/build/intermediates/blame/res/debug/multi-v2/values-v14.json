@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/alexxia/Documents/6198_RoverRuckusCode/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v14/values-v14.xml",
+            "outputFile": "/Users/EChang1/Desktop/TeamStuff/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v14/values-v14.xml",
             "map": [
                 {
-                    "source": "/Users/alexxia/.gradle/caches/transforms-1/files-1.1/RobotCore-release.aar/9725750f87e153c358003e31836dabcb/res/values-v14/values-v14.xml",
+                    "source": "/Users/EChang1/.gradle/caches/transforms-1/files-1.1/RobotCore-release.aar/b24ea500a54be399c3058ac2e45ca8b4/res/values-v14/values-v14.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
