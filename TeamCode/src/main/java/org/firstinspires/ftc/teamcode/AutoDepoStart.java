@@ -20,8 +20,12 @@ public class AutoDepoStart extends LinearOpMode{
 
     private double power = .2;
 
+    private DcMotor actuator = null;
+
         @Override
         public void runOpMode() {
+
+            //initialize
             frontLeftDrive = hardwareMap.get(DcMotor.class, "fleft");frontRightDrive = hardwareMap.get(DcMotor.class, "fright");
             backLeftDrive = hardwareMap.get(DcMotor.class, "bleft");backRightDrive = hardwareMap.get(DcMotor.class, "bright");
             frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -30,14 +34,21 @@ public class AutoDepoStart extends LinearOpMode{
             intake = hardwareMap.get(CRServo.class, "IntakeServo");
             upDownBoi = hardwareMap.get(CRServo.class, "UpDownBoi");
             intake.setDirection(CRServo.Direction.FORWARD);
-
-
+            actuator = hardwareMap.get(DcMotor.class,"Actuator");
+            actuator.setDirection(DcMotor.Direction.FORWARD);
             telemetry.addData("Robot", "Initialized");
             telemetry.update();
+
+
+
+
+
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
             runtime.reset();
 
+
+            //startup
             frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,18 +57,26 @@ public class AutoDepoStart extends LinearOpMode{
             frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             frontLeftDrive.setPower(power);
             frontRightDrive.setPower(power);
             backLeftDrive.setPower(power);
             backRightDrive.setPower(power);
 
 
+            //move down
+            actuator.setPower(-1.0);
+            sleep(8000);
+            actuator.setPower(0.0);
+
+
+            //main
             move(1340,3000);
             turn(520,3000);
             move(2400,3000);
 
 
+
+            //stop
             frontLeftDrive.setPower(0);
             frontRightDrive.setPower(0);
             backLeftDrive.setPower(0);
@@ -84,10 +103,6 @@ public class AutoDepoStart extends LinearOpMode{
         backLeftDrive.setTargetPosition(value);
         backRightDrive.setTargetPosition(value);
         sleep(sleepNum);
-
-    }
-    public void goldFinder(){
-        //do a thing
 
     }
 }
