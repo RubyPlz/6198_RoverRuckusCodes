@@ -108,10 +108,12 @@ public class AutoCraterStart extends LinearOpMode{
             actuator.setPower(-1.0);
             sleep(8000);
             actuator.setPower(0.0);
+            turn(140,300);
 
 
 
-            //main
+
+            /*main
             move(760,3000);
             move(-350,3000);
             turn(520,3000);
@@ -119,7 +121,7 @@ public class AutoCraterStart extends LinearOpMode{
             turn(280,3000);
             move(1100,3000);
             move(-2100,3000);
-
+            */
 
 
             //stop

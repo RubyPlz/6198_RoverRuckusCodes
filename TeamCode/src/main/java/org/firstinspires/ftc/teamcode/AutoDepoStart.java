@@ -67,13 +67,14 @@ public class AutoDepoStart extends LinearOpMode{
             actuator.setPower(-1.0);
             sleep(8000);
             actuator.setPower(0.0);
+            turn(140,300);
 
 
-            //main
+            /*main
             move(1340,3000);
             turn(520,3000);
             move(2400,3000);
-
+            */
 
 
             //stop
