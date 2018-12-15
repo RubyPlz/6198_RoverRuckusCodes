@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
@@ -18,6 +19,11 @@ public class AutoTest extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
+    private Servo dump = null;
+    private boolean dumpPressPos = false;
+    private boolean dumpPressNeg = false;
+    private double position = 0.0;
+
     private boolean dPadUpPress = false;
     private boolean dPadDownPress = false;
     private boolean dPadLeftPress = false;
@@ -39,6 +45,8 @@ public class AutoTest extends LinearOpMode {
 
     private GoldAlignDetector detector;
 
+
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -56,6 +64,14 @@ public class AutoTest extends LinearOpMode {
         frontRightDrive.setPower(0);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
+
+        dump = hardwareMap.get(Servo.class,"Dump");
+        dump.setDirection(Servo.Direction.FORWARD);
+
+
+
+
+
         detector = new GoldAlignDetector();
         detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
@@ -325,6 +341,36 @@ public class AutoTest extends LinearOpMode {
                 lBump = false;
             }
 
+
+
+
+            //dump
+            if(gamepad2.a && !dumpPressPos){
+                position += .05;
+                dumpPressPos = true;
+            }else if (!gamepad2.a){
+                dumpPressPos = false;
+            }
+
+            if(gamepad2.b && !dumpPressNeg){
+                position -= .05;
+                dumpPressNeg = true;
+            }else if(!gamepad2.b){
+                dumpPressNeg = false;
+            }
+
+            if(gamepad2.y){
+                position = 0.0;
+                dump.setPosition(position);
+
+            }
+            if(gamepad2.x){
+                dump.setPosition(position);
+            }
+
+
+
+            telemetry.addData("Position", position);
 
             telemetry.update();
         }
