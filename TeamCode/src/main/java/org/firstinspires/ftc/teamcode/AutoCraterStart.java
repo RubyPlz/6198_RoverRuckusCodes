@@ -80,7 +80,9 @@ public class AutoCraterStart extends LinearOpMode{
             backLeftDrive.setPower(power);
             backRightDrive.setPower(power);
 
-
+            actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            actuator.setPower(1);
 
 
             //Gold stuff
@@ -105,10 +107,9 @@ public class AutoCraterStart extends LinearOpMode{
 
 
             //move down
-            actuator.setPower(-1.0);
-            sleep(8000);
-            actuator.setPower(0.0);
-            turn(140,300);
+            actuator.setTargetPosition(-10000);
+            sleep(5000);
+            turn(-280,2000);
 
 
 

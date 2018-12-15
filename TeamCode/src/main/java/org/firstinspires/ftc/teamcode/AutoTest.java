@@ -47,6 +47,11 @@ public class AutoTest extends LinearOpMode {
 
 
 
+
+    private DcMotor actuator = null;
+    private boolean actBoolUp = false;
+    private boolean actBoolDown = false;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -69,6 +74,10 @@ public class AutoTest extends LinearOpMode {
         dump.setDirection(Servo.Direction.FORWARD);
 
 
+
+        actuator = hardwareMap.get(DcMotor.class,"Actuator");
+        actuator.setDirection(DcMotor.Direction.FORWARD);
+        actuator.setPower(0);
 
 
 
@@ -107,7 +116,28 @@ public class AutoTest extends LinearOpMode {
             telemetry.addData("Sleep Number",sleepNum);
             telemetry.addData("Aligned with Gold", detector.getAligned());
 
+            if(gamepad2.dpad_up && !actBoolUp){
+                actBoolUp = true;
+                actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+                actuator.setTargetPosition(ticNum);
+                actuator.setPower(1.0);
+            }else if (!gamepad2.dpad_up){
+                actBoolUp = false;
+            }
+
+            if(gamepad2.dpad_down && !actBoolDown){
+                actBoolUp = true;
+                actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                actuator.setTargetPosition(-ticNum);
+                actuator.setPower(1.0);
+
+            }else if (!gamepad2.dpad_down){
+                actBoolDown = false;
+            }
 
 
 
@@ -126,7 +156,6 @@ public class AutoTest extends LinearOpMode {
                 backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-
                 frontLeftDrive.setTargetPosition(ticNum);//move to pos 10
                 frontRightDrive.setTargetPosition(ticNum);
                 backLeftDrive.setTargetPosition(ticNum);
@@ -141,6 +170,7 @@ public class AutoTest extends LinearOpMode {
             else if(!gamepad1.y) {
                 yPress = false;
             }
+
             if (gamepad1.a && !aPress) {
                 aPress = true;
                 frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

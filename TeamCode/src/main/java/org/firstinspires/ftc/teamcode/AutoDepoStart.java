@@ -63,12 +63,18 @@ public class AutoDepoStart extends LinearOpMode{
             backRightDrive.setPower(power);
 
 
-            //move down
-            actuator.setPower(-1.0);
-            sleep(8000);
-            actuator.setPower(0.0);
-            turn(140,300);
+            actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            actuator.setPower(1);
 
+
+
+
+
+            //move down
+            actuator.setTargetPosition(-10000);
+            sleep(5000);
+            turn(-280,2000);
 
             /*main
             move(1340,3000);

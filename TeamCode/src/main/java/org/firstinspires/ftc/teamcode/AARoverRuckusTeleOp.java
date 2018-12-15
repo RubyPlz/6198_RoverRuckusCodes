@@ -29,13 +29,20 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
 
     private DcMotor horiSlide = null;
     private DcMotor vertSlide = null;
+
     private Servo dump = null;
 
+    private boolean boolZero = true;
+    private boolean boolOne = false;
+    private boolean boolFive = false;
+
+
     private DcMotor actuator = null;
+    private boolean actBool = true;
+    private boolean rEEE = false;
 
 
 
-    private double turnNum = 0.0;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -155,16 +162,14 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
 
 
 
-
-
             //horizontal slide
             if(gamepad1.right_trigger>0 || gamepad1.left_trigger>0){
                 if(gamepad1.right_trigger>0){
-                    horiSlide.setPower(-gamepad1.right_trigger);
+                    horiSlide.setPower(gamepad1.right_trigger);
 
                 }
                 if(gamepad1.left_trigger>0){
-                    horiSlide.setPower(gamepad1.left_trigger);
+                    horiSlide.setPower(-gamepad1.left_trigger);
 
                 }
 
@@ -174,45 +179,95 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
 
 
             //TURBO MODE
-            if(gamepad1.y) {
-                frontLeftDrive.setPower(1);
-                frontRightDrive.setPower(1);
-                backLeftDrive.setPower(1);
-                backRightDrive.setPower(1);
+            if(gamepad1.y && !rEEE) {
+                rEEE = true;
+                actBool = !actBool;
+                /*
+                if(boolZero){
+                    dump.setPosition(0);
+                    boolZero = false;
+                    boolOne = true;
+                    boolFive = true;
+                }else if(boolOne){
+                    dump.setPosition(.1);
+                    boolOne = false;
+                    boolZero = true;
+                    boolFive = true;
+                }else if(boolFive){
+                    dump.setPosition(.5);
+                    boolFive = false;
+                    boolZero = true;
+                    boolOne = true;
+                }
+                */
+            }else if(!gamepad1.y){
+                rEEE = false;
             }
+            telemetry.addData("Toggle", actBool);
+
 
 
 
             //actuator
-            if(gamepad1.dpad_up || gamepad1.dpad_down) {
-                if(gamepad1.dpad_up) {
-                    actuator.setPower(-1.0);//neg robot go down
+            if(actBool){
+                if (gamepad1.dpad_up || gamepad1.dpad_down) {
+                    if (gamepad1.dpad_up) {
+                        actuator.setPower(-1.0);//neg robot go down
+                    }
+                    if (gamepad1.dpad_down) {
+                        actuator.setPower(1.0);//pos robot go up
+                    }
+                } else {
+                    actuator.setPower(0);
                 }
-                if(gamepad1.dpad_down) {
-                    actuator.setPower(1.0);//pos robot go up
-                }
-            }else{
-                actuator.setPower(0);
             }
-
-
-
 
 
             //VertLift
-            if(gamepad2.dpad_up || gamepad2.dpad_down) {
-                if(gamepad2.dpad_up) {
-                    vertSlide.setPower(1.0);//pos go up
+            if(!actBool) {
+                if (gamepad1.dpad_up || gamepad1.dpad_down) {
+                    if (gamepad1.dpad_up) {
+                        vertSlide.setPower(1.0);//pos go up
+                    }
+                    if (gamepad1.dpad_down) {
+                        vertSlide.setPower(-1.0);//neg go down
+                    }
+                } else {
+                    vertSlide.setPower(0);
                 }
-                if(gamepad2.dpad_down) {
-                    vertSlide.setPower(-1.0);//neg go down
+            }
+
+            if(!actBool){
+                if (gamepad1.dpad_right) {
+                    dump.setPosition(.5);
                 }
-            }else{
-                vertSlide.setPower(0);
+                if (gamepad1.dpad_left) {
+                    dump.setPosition(.1);
+                }
+            }
+
+            /*
+            //dump
+            if(gamepad2.dpad_left){
+
+
+            }
+            if(gamepad2.dpad_right){
+
             }
 
 
-            telemetry.addData("DumpAngle",turnNum);
+
+            if(gamepad2.a){
+                dump.setPosition(0.5);
+            }
+            if(gamepad2.b){
+                dump.setPosition(0.1);
+            }
+            if(gamepad2.x){
+                dump.setPosition(0.0);
+            }
+            */
 
             telemetry.update();
         }
