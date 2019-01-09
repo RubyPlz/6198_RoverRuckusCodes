@@ -106,7 +106,7 @@ public class AutoTest extends LinearOpMode {
             telemetry.addData("Power Level", "Power Level (%.2f)", powerLevel);
             telemetry.addData("Sleep Number",sleepNum);
             telemetry.addData("Aligned with Gold", detector.getAligned());
-
+            telemetry.addData("X POSITION", detector.getXPosition());
 
 
 

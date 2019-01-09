@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.opencv.core.Size;
 
 
-@TeleOp(name="Hough Silver Example", group="DogeCV")
+//@TeleOp(name="Hough Silver Example", group="DogeCV")
 
 public class HoughSilverExample extends OpMode
 {

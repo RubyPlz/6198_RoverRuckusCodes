@@ -1,13 +1,4 @@
-#Thu Jan 03 18:15:30 CST 2019
-path.3=classes.dex
-path.2=classes.dex
-path.1=classes.dex
+#Tue Jan 08 18:21:28 CST 2019
+base.0=/Users/EChang1/Desktop/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
-renamed.3=classes4.dex
-renamed.2=classes3.dex
-renamed.1=classes2.dex
 renamed.0=classes.dex
-base.3=/Users/alexxia/Documents/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/transforms/dexMerger/debug/14
-base.2=/Users/alexxia/Documents/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/transforms/dexMerger/debug/13
-base.1=/Users/alexxia/Documents/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/transforms/dexMerger/debug/12
-base.0=/Users/alexxia/Documents/Team-6198-Rover-Ruckus-Code/TeamCode/build/intermediates/transforms/dexMerger/debug/15

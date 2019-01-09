@@ -1,9 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.*;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import java.util.Locale;
 
 @TeleOp(name="TeleOp")
 public class AARoverRuckusTeleOp extends LinearOpMode {
@@ -13,7 +25,6 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
-
 
     private CRServo intake = null;//power pos is outtake, power neg is intake
     private boolean outTakeOn = false;
@@ -37,8 +48,6 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
 
 
     private double turnNum = 0.0;
-    private boolean dumpPressPos = false;
-    private boolean dumpPressNeg = false;
 
     //Drive code stuff
     double r;
@@ -48,6 +57,12 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
     double fR;
     double bL;
     double bR;
+
+
+    //IMU
+    BNO055IMU imu;
+    Orientation angles;
+    Acceleration gravity;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,43 +88,65 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
         intake = hardwareMap.get(CRServo.class, "IntakeServo");
         //upDownBoi = hardwareMap.get(CRServo.class, "UpDownBoi");
 
-
         horiSlide = hardwareMap.get(DcMotor.class, "HoriSlide");
         horiSlide.setDirection(DcMotor.Direction.REVERSE);
         vertSlide = hardwareMap.get(DcMotor.class, "VertSlide");
         vertSlide.setDirection(DcMotor.Direction.FORWARD);
 
-
         dump = hardwareMap.get(Servo.class, "Dump");
-        dump.setPosition(.055);
+        dump.setPosition(.048);
         //dump.setDirection(Servo.Direction.FORWARD);
-
 
         actuator = hardwareMap.get(DcMotor.class, "Actuator");
         actuator.setDirection(DcMotor.Direction.FORWARD);
 
 
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity  = imu.getGravity();
+
+        String ang = formatAngle(angles.angleUnit,angles.firstAngle);
+        double angle = Double.parseDouble(ang);
+        telemetry.addData("angle",angle);
+
         telemetry.addData("Robot", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         runtime.reset();
-
 
         //PLAY
         while (opModeIsActive()) {
             //DONT TOUCH THIS
             r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            robotAngle = Math.atan2(gamepad1.left_stick_y, q-gamepad1.left_stick_x) - Math.PI / 4;
+            robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
             rightX = .6 * -gamepad1.right_stick_x;
             fL = r * Math.cos(robotAngle) + rightX;
             fR = r * Math.sin(robotAngle) - rightX;
             bL = r * Math.sin(robotAngle) + rightX;
             bR = r * Math.cos(robotAngle) - rightX;
-            frontLeftDrive.setPower(fL * .75);
-            frontRightDrive.setPower(fR * .75);
-            backLeftDrive.setPower(bL * .75);
-            backRightDrive.setPower(bR * .75);
+            frontLeftDrive.setPower(fL);
+            frontRightDrive.setPower(fR);
+            backLeftDrive.setPower(bL);
+            backRightDrive.setPower(bR);
             telemetry.addData("Motors", "front left (%.2f), front right (%.2f), back left (%.2f), back right (%.2f)", frontLeftDrive.getPower(), frontRightDrive.getPower(), backLeftDrive.getPower(), backRightDrive.getPower());
             telemetry.addData("Stick", "Left stick y (%.2f), Left stick x (%.2f), Right stick x (%.2f) Right Stick Value (%.2f)", -gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, rightX);
             telemetry.addData("Direct Values", "fL (%.2f), fR (%.2f), bL (%.2f), bR (%.2f)", fL, fR, bL, bR);
@@ -150,68 +187,7 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
             }
 
 
-            //up down boi
-            /**
-             if (gamepad1.right_bumper || gamepad1.left_bumper) {
-             if (gamepad1.left_bumper) {//neg
-             upDownBoi.setPower(-1);
-             }
-             if (gamepad1.right_bumper) {//pos
-             upDownBoi.setPower(1);
-             }
-             } else {
-             upDownBoi.setPower(0);
-             }
-             **/
-            /**
-            if (gamepad1.right_bumper || gamepad1.left_bumper) {
-                if (gamepad1.left_bumper) {//neg
-                    intakeState = 0;
-                }
-                if (gamepad1.right_bumper) {//pos
-                    intakeState = 1;
-                }
-            }
-            if(gamepad1.y){
-                intakeState = 2;
-            }
-
-
-
-            if(intakeState == 1) {
-
-                if(pot.getVoltage() < 1.6){
-                    upDownBoi.setPower(.5);
-                }
-
-                else if (pot.getVoltage() < 2.75){
-                    upDownBoi.setPower(-.02);
-                }
-
-                else if(pot.getVoltage() > 2.7 && pot.getVoltage() < 2.87) {
-                    upDownBoi.setPower(-.2);
-                }
-
-                else if(pot.getVoltage() > 2.87){
-                    upDownBoi.setPower(-.6);
-                }
-            }
-            if(intakeState == 0){
-                if (pot.getVoltage() > 1.3) {
-                    upDownBoi.setPower(-.8);
-                }
-                else if(pot.getVoltage() > .85){
-                    upDownBoi.setPower(-.1);
-                }
-                else{
-                    upDownBoi.setPower(0);
-                }
-            }
-            if(intakeState == 2) {
-                upDownBoi.setPower(0);
-            }
-             **/
-
+            //updownBoi
             if (pot.getVoltage() > 1.2) {
                 if (gamepad1.left_bumper) {//neg
                     upDownBoi.setPower(-.6);
@@ -222,8 +198,7 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
                 else{
                     upDownBoi.setPower(-.1);
                 }
-            }
-            else{
+            }else{
                 if(gamepad1.left_bumper){
                     upDownBoi.setPower(-.2);
                 }
@@ -234,10 +209,6 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
                     upDownBoi.setPower(0);
                 }
             }
-
-
-
-
 
 
                 //horizontal slide
@@ -288,7 +259,7 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
                     dump.setPosition(.49);
                 }
                 if (gamepad2.b) {
-                    dump.setPosition(.055);
+                    dump.setPosition(.048);
                 }
 
                 if (gamepad2.y) {
@@ -296,12 +267,30 @@ public class AARoverRuckusTeleOp extends LinearOpMode {
                 }
 
 
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                ang = formatAngle(angles.angleUnit,angles.firstAngle);
+                angle = Double.parseDouble(ang);
+                telemetry.addData("angle",angle);
+
                 telemetry.addData("DumpAngle", turnNum);
                 telemetry.addData("IntakePower", intakePower);
 
                 telemetry.update();
             }
         }
+
+
+    //----------------------------------------------------------------------------------------------
+    // Formatting
+    //----------------------------------------------------------------------------------------------
+
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
+
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+}
 
 

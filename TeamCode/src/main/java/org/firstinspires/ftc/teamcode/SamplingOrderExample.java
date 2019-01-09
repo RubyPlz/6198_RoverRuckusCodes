@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Sampling Order Example", group="DogeCV")
+//@TeleOp(name="Sampling Order Example", group="DogeCV")
 
 public class SamplingOrderExample extends OpMode
 {

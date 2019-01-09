@@ -17,7 +17,7 @@ public class SingleMotorEncoderTest extends LinearOpMode {
     private boolean dPadRightPress = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        motor = hardwareMap.get(DcMotor.class, "VertSlide");
+        motor = hardwareMap.get(DcMotor.class, "Actuator");
         motor.setDirection(DcMotor.Direction.FORWARD);
         motor.setPower(0);
         telemetry.addData("Robot", "Initialized");
@@ -39,9 +39,10 @@ public class SingleMotorEncoderTest extends LinearOpMode {
 
                 motor.setPower(1);//at max speed (-1 to 1)
 
-                sleep(500);
+                sleep(10);
             } else if (!gamepad1.dpad_up)
                 dPadUpPress = false;
+
 
             if (gamepad1.dpad_down && !dPadDownPress) {
                 count -= 50;
@@ -55,8 +56,13 @@ public class SingleMotorEncoderTest extends LinearOpMode {
 
                 motor.setPower(1);//at max speed (-1 to 1)
 
-                sleep(500);
+                sleep(10);
+            } else if (!gamepad1.dpad_down){
+                dPadDownPress = false;
             }
+
+
+
             if (gamepad1.dpad_right && !dPadRightPress) {
                 ticNum += 10;
                 dPadRightPress = true;
@@ -70,8 +76,7 @@ public class SingleMotorEncoderTest extends LinearOpMode {
                 dPadLeftPress = false;
             }
 
-            else if (!gamepad1.dpad_down)
-                dPadDownPress = false;
+
 
             if(gamepad1.a) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
